@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge LK</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F2EC;
+    --surface: #FDFBF7;
+    --surface2: #EDE9E0;
+    --ink: #1A1714;
+    --ink2: #5C5751;
+    --ink3: #9B9590;
+    --accent: #E84B2F;
+    --accent2: #2B5CE6;
+    --accent3: #1A9E6E;
+    --accent4: #F5A623;
+    --border: #DDD9D0;
+    --border2: #C8C3BA;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; overflow-x: hidden; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 240px; min-height: 100vh; background: var(--ink); color: #fff;
+    display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .logo-mark {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+  .logo-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
+
+  .sidebar-nav { flex: 1; padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .nav-section-label { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 12px 12px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px;
+    cursor: pointer; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 400;
+    transition: all 0.15s; border: none; background: none; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .nav-item.active { background: var(--accent); color: #fff; font-weight: 500; }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-badge {
+    margin-left: auto; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 20px; min-width: 20px; text-align: center;
+  }
+  .nav-item.active .nav-badge { background: rgba(255,255,255,0.3); }
+
+  .sidebar-user {
+    margin: 12px; padding: 12px 14px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.06); display: flex; align-items: center; gap: 10px;
+  }
+  .user-avatar {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent2);
+    display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 500; color: #fff; }
+  .user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  /* ── MAIN CONTENT ── */
+  .main { margin-left: 240px; flex: 1; min-height: 100vh; }
+  .screen { display: none; padding: 0; }
+  .screen.active { display: block; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 36px; height: 64px; display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; flex: 1; }
+  .topbar-search {
+    display: flex; align-items: center; gap: 8px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 50px; padding: 8px 16px;
+    width: 260px;
+  }
+  .topbar-search input {
+    border: none; background: none; outline: none; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--ink); width: 100%;
+  }
+  .topbar-search input::placeholder { color: var(--ink3); }
+  .topbar-btn {
+    display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer;
+    border: none; transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #c73d24; }
+  .btn-ghost { background: none; border: 1px solid var(--border); color: var(--ink2); }
+  .btn-ghost:hover { border-color: var(--border2); background: var(--surface2); }
+
+  /* ── CONTENT AREA ── */
+  .content { padding: 32px 36px; }
+
+  /* ── STATS ROW ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 24px; position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .stat-card.s1::before { background: var(--accent); }
+  .stat-card.s2::before { background: var(--accent2); }
+  .stat-card.s3::before { background: var(--accent3); }
+  .stat-card.s4::before { background: var(--accent4); }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink3); margin-bottom: 8px; }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; }
+  .stat-sub { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+  /* ── FILTER ROW ── */
+  .filter-row { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 13px; color: var(--ink3); margin-right: 4px; }
+  .filter-chip {
+    padding: 6px 14px; border-radius: 50px; font-size: 13px; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    color: var(--ink2);
+  }
+  .filter-chip:hover { border-color: var(--border2); }
+  .filter-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .filter-select {
+    padding: 6px 14px; border-radius: 50px; font-size: 13px; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; outline: none; font-family: 'DM Sans', sans-serif;
+    color: var(--ink2); appearance: none; padding-right: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239B9590' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+
+  /* ── LISTINGS GRID ── */
+  .listings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  .listing-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; cursor: pointer; transition: all 0.2s;
+    display: flex; flex-direction: column;
+  }
+  .listing-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
+  .listing-card-header { padding: 20px 20px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .listing-industry-tag {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.5px; padding: 4px 10px;
+    border-radius: 4px; text-transform: uppercase;
+  }
+  .tag-tech { background: #E8F0FE; color: #1a56c4; }
+  .tag-finance { background: #E8F5ED; color: #1a7a42; }
+  .tag-marketing { background: #FEF3E8; color: #c47a1a; }
+  .tag-design { background: #F3E8FE; color: #7a1ac4; }
+  .tag-hr { background: #FEE8E8; color: #c41a1a; }
+  .tag-data { background: #E8FAFE; color: #1a8fc4; }
+  .tag-business { background: #FAFEE8; color: #8fa01a; }
+
+  .listing-mode-badge {
+    font-size: 11px; display: flex; align-items: center; gap: 4px; color: var(--ink3);
+  }
+  .mode-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .mode-physical { background: var(--accent3); }
+  .mode-online { background: var(--accent2); }
+  .mode-hybrid { background: var(--accent4); }
+
+  .listing-card-body { padding: 14px 20px 20px; flex: 1; display: flex; flex-direction: column; }
+  .listing-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+  .listing-provider { font-size: 13px; color: var(--ink2); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .provider-avatar-sm {
+    width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .listing-meta { display: flex; gap: 14px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
+  .listing-meta-item { font-size: 12px; color: var(--ink3); display: flex; align-items: center; gap: 4px; }
+  .listing-card-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .listing-price { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+  .price-free { color: var(--accent3); }
+  .price-paid { color: var(--ink); }
+  .listing-cta {
+    font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 50px;
+    background: var(--ink); color: #fff; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .listing-cta:hover { background: var(--accent); }
+
+  /* ── DETAIL MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 200; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: 16px; width: 640px; max-height: 85vh;
+    overflow-y: auto; border: 1px solid var(--border); position: relative;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(8px); } to { opacity:1; transform:none; } }
+  .modal-header {
+    padding: 28px 32px 0; border-bottom: 1px solid var(--border); padding-bottom: 20px;
+    position: sticky; top: 0; background: var(--surface); z-index: 10;
+  }
+  .modal-close {
+    position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
+    border-radius: 50%; background: var(--surface2); border: none; cursor: pointer;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    color: var(--ink2); transition: all 0.15s;
+  }
+  .modal-close:hover { background: var(--border); }
+  .modal-body { padding: 24px 32px 32px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; line-height: 1.2; margin: 10px 0 6px; }
+  .modal-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .detail-section { margin-bottom: 24px; }
+  .detail-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink3); margin-bottom: 10px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .detail-item { background: var(--bg); border-radius: var(--radius-sm); padding: 12px 14px; }
+  .detail-item-label { font-size: 11px; color: var(--ink3); margin-bottom: 3px; }
+  .detail-item-value { font-size: 14px; font-weight: 500; }
+  .modal-desc { font-size: 14px; line-height: 1.7; color: var(--ink2); }
+  .provider-card {
+    display: flex; align-items: center; gap: 14px; background: var(--bg);
+    border-radius: var(--radius-sm); padding: 16px;
+  }
+  .provider-avatar-lg {
+    width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 16px; font-weight: 800; color: #fff; flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+  .provider-name { font-weight: 600; font-size: 15px; }
+  .provider-title { font-size: 13px; color: var(--ink3); }
+  .contact-actions { display: flex; gap: 10px; margin-top: 24px; }
+  .contact-btn {
+    flex: 1; padding: 12px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .contact-primary { background: var(--accent); color: #fff; }
+  .contact-primary:hover { background: #c73d24; }
+  .contact-secondary { background: var(--surface2); color: var(--ink); border: 1px solid var(--border); }
+  .contact-secondary:hover { background: var(--border); }
+
+  /* ── FORM SCREEN ── */
+  .form-container { max-width: 720px; margin: 0 auto; }
+  .form-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 32px 36px; margin-bottom: 20px;
+  }
+  .form-section-title {
+    font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
+    margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: #fff;
+    font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1/-1; }
+  .form-label { font-size: 13px; font-weight: 500; color: var(--ink2); }
+  .form-label span { color: var(--accent); margin-left: 2px; }
+  .form-input, .form-select, .form-textarea {
+    padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink);
+    outline: none; transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent2); }
+  .form-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+  .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239B9590' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .radio-option {
+    display: flex; align-items: center; gap: 8px; padding: 9px 16px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
+    transition: all 0.15s; font-size: 13px;
+  }
+  .radio-option input[type=radio] { accent-color: var(--accent2); }
+  .radio-option:has(input:checked) { border-color: var(--accent2); background: #E8F0FE; color: var(--accent2); }
+  .upload-zone {
+    border: 2px dashed var(--border2); border-radius: var(--radius); padding: 32px;
+    text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg);
+  }
+  .upload-zone:hover { border-color: var(--accent2); background: #E8F0FE10; }
+  .upload-icon { font-size: 32px; margin-bottom: 8px; }
+  .upload-text { font-size: 14px; color: var(--ink2); }
+  .upload-sub { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+  .form-submit-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+  .form-note { font-size: 12px; color: var(--ink3); background: var(--bg); border-radius: var(--radius-sm); padding: 12px 14px; border-left: 3px solid var(--accent4); }
+
+  /* ── AUTH SCREENS ── */
+  .auth-layout {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    margin-left: -240px; width: calc(100% + 240px);
+  }
+  .auth-left {
+    background: var(--ink); padding: 60px; display: flex; flex-direction: column;
+    justify-content: center; position: relative; overflow: hidden;
+  }
+  .auth-left-deco {
+    position: absolute; top: -80px; right: -80px; width: 300px; height: 300px;
+    border-radius: 50%; background: var(--accent); opacity: 0.12;
+  }
+  .auth-left-deco2 {
+    position: absolute; bottom: -60px; left: -40px; width: 200px; height: 200px;
+    border-radius: 50%; background: var(--accent2); opacity: 0.1;
+  }
+  .auth-tagline { font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 20px; }
+  .auth-tagline span { color: var(--accent); }
+  .auth-sub { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.7; max-width: 340px; }
+  .auth-badges { display: flex; flex-direction: column; gap: 12px; margin-top: 36px; }
+  .auth-badge {
+    display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.06);
+    border-radius: var(--radius-sm); padding: 12px 16px; border: 1px solid rgba(255,255,255,0.08);
+  }
+  .auth-badge-icon { font-size: 20px; }
+  .auth-badge-text { font-size: 13px; color: rgba(255,255,255,0.7); }
+  .auth-right { background: var(--surface); padding: 60px; display: flex; flex-direction: column; justify-content: center; }
+  .auth-form-title { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+  .auth-form-sub { font-size: 14px; color: var(--ink3); margin-bottom: 32px; }
+  .auth-tabs { display: flex; gap: 0; margin-bottom: 28px; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  .auth-tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; color: var(--ink2); transition: all 0.15s; }
+  .auth-tab.active { background: var(--ink); color: #fff; }
+  .auth-form-group { margin-bottom: 16px; }
+  .auth-label { font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; }
+  .auth-input {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--bg); color: var(--ink); outline: none;
+    transition: border-color 0.15s;
+  }
+  .auth-input:focus { border-color: var(--accent2); }
+  .auth-btn {
+    width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-top: 8px; transition: all 0.15s; letter-spacing: 0.3px;
+  }
+  .auth-btn:hover { background: #c73d24; }
+  .auth-divider { text-align: center; font-size: 12px; color: var(--ink3); margin: 16px 0; position: relative; }
+  .auth-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:var(--border); }
+  .auth-divider span { background: var(--surface); padding: 0 12px; position: relative; }
+  .id-upload {
+    border: 2px dashed var(--border2); border-radius: var(--radius-sm); padding: 20px;
+    text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg); margin-top: 6px;
+  }
+  .id-upload:hover { border-color: var(--accent2); }
+  .role-select { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .role-option {
+    border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px 12px;
+    cursor: pointer; text-align: center; transition: all 0.15s;
+  }
+  .role-option.selected { border-color: var(--accent2); background: #E8F0FE; }
+  .role-option-icon { font-size: 24px; margin-bottom: 6px; }
+  .role-option-label { font-size: 13px; font-weight: 500; }
+
+  /* ── ADMIN SCREEN ── */
+  .admin-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .admin-table th { background: var(--bg); padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink3); border-bottom: 1px solid var(--border); font-weight: 500; }
+  .admin-table td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .admin-table tr:last-child td { border-bottom: none; }
+  .admin-table tr:hover td { background: var(--bg); }
+  .status-badge { display: inline-flex; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .status-pending { background: #FEF3E8; color: #c47a1a; }
+  .status-approved { background: #E8F5ED; color: #1a7a42; }
+  .status-rejected { background: #FEE8E8; color: #c41a1a; }
+  .admin-actions { display: flex; gap: 6px; }
+  .action-btn {
+    padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .approve-btn { background: #E8F5ED; color: #1a7a42; }
+  .approve-btn:hover { background: #1a7a42; color: #fff; }
+  .reject-btn { background: #FEE8E8; color: #c41a1a; }
+  .reject-btn:hover { background: #c41a1a; color: #fff; }
+  .view-btn { background: var(--surface2); color: var(--ink2); }
+  .view-btn:hover { background: var(--border); }
+
+  .admin-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 28px; }
+  .admin-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; }
+  .admin-stat-val { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
+  .admin-stat-lbl { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+  /* ── PROFILE SCREEN ── */
+  .profile-hero {
+    background: var(--ink); padding: 36px; border-radius: var(--radius) var(--radius) 0 0;
+    display: flex; align-items: center; gap: 24px; position: relative; overflow: hidden;
+  }
+  .profile-hero::before {
+    content:''; position:absolute; top:-40px;right:-40px;width:200px;height:200px;
+    border-radius:50%; background:var(--accent); opacity:0.1;
+  }
+  .profile-avatar {
+    width: 80px; height: 80px; border-radius: 50%; background: var(--accent2);
+    display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800; color: #fff; flex-shrink: 0; border: 3px solid rgba(255,255,255,0.2);
+  }
+  .profile-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #fff; }
+  .profile-uni { font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .profile-verified { display: inline-flex; align-items: center; gap: 5px; background: rgba(26,158,110,0.25); color: #4dd99a; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-top: 8px; }
+  .profile-body { background: var(--surface); border: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); padding: 28px; }
+  .profile-section { margin-bottom: 28px; }
+  .profile-section-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .saved-listing { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .saved-listing:last-child { border-bottom: none; }
+  .saved-listing-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .saved-listing-title { font-size: 14px; font-weight: 500; }
+  .saved-listing-meta { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+
+  /* empty state */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--ink3); }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink2); margin-bottom: 6px; }
+  .empty-sub { font-size: 14px; }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: #fff;
+    padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; z-index: 999;
+    transform: translateY(80px); opacity: 0; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark"><div class="logo-dot"></div> SkillBridge</div>
+    <div class="logo-sub">Sri Lanka</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Student</div>
+    <button class="nav-item active" onclick="showScreen('discover')">
+      <span class="nav-icon">🔍</span> Discover
+    </button>
+    <button class="nav-item" onclick="showScreen('saved')">
+      <span class="nav-icon">🔖</span> Saved
+    </button>
+    <button class="nav-item" onclick="showScreen('profile')">
+      <span class="nav-icon">👤</span> My Profile
+    </button>
+    <div class="nav-section-label">Provider</div>
+    <button class="nav-item" onclick="showScreen('submit')">
+      <span class="nav-icon">📋</span> Post a Listing
+    </button>
+    <div class="nav-section-label">Platform</div>
+    <button class="nav-item" onclick="showScreen('admin')">
+      <span class="nav-icon">⚙️</span> Admin Panel <span class="nav-badge">3</span>
+    </button>
+    <button class="nav-item" onclick="showScreen('login')">
+      <span class="nav-icon">🔐</span> Auth Screens
+    </button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">KP</div>
+    <div>
+      <div class="user-name">Kavya Perera</div>
+      <div class="user-role">Student · UoM</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ══ SCREEN 1: DISCOVER ══ -->
+  <section class="screen active" id="screen-discover">
+    <div class="topbar">
+      <div class="topbar-title">Discover</div>
+      <div class="topbar-search">
+        <span>🔍</span>
+        <input type="text" placeholder="Search workshops, certifications…">
+      </div>
+      <button class="topbar-btn btn-ghost">Sort ↕</button>
+    </div>
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card s1">
+          <div class="stat-label">Active Listings</div>
+          <div class="stat-value">142</div>
+          <div class="stat-sub">↑ 18 this week</div>
+        </div>
+        <div class="stat-card s2">
+          <div class="stat-label">Industries</div>
+          <div class="stat-value">14</div>
+          <div class="stat-sub">Across Sri Lanka</div>
+        </div>
+        <div class="stat-card s3">
+          <div class="stat-label">Free Workshops</div>
+          <div class="stat-value">89</div>
+          <div class="stat-sub">63% of all listings</div>
+        </div>
+        <div class="stat-card s4">
+          <div class="stat-label">Providers</div>
+          <div class="stat-value">47</div>
+          <div class="stat-sub">Coaches &amp; Institutes</div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">Industry:</span>
+        <button class="filter-chip active" onclick="filterClick(this)">All</button>
+        <button class="filter-chip" onclick="filterClick(this)">Tech</button>
+        <button class="filter-chip" onclick="filterClick(this)">Finance</button>
+        <button class="filter-chip" onclick="filterClick(this)">Marketing</button>
+        <button class="filter-chip" onclick="filterClick(this)">Design</button>
+        <button class="filter-chip" onclick="filterClick(this)">Data Science</button>
+        <button class="filter-chip" onclick="filterClick(this)">HR</button>
+        <select class="filter-select">
+          <option>Any Mode</option>
+          <option>Online</option>
+          <option>Physical</option>
+          <option>Hybrid</option>
+        </select>
+        <select class="filter-select">
+          <option>Any Price</option>
+          <option>Free only</option>
+          <option>Paid</option>
+        </select>
+      </div>
+
+      <div class="listings-grid">
+        <!-- Card 1 -->
+        <div class="listing-card" onclick="openModal('modal1')">
+          <div class="listing-card-header">
+            <span class="listing-industry-tag tag-tech">Tech</span>
+            <div class="listing-mode-badge"><div class="mode-dot mode-online"></div> Online</div>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-title">AWS Cloud Practitioner Certification Bootcamp</div>
+            <div class="listing-provider">
+              <div class="provider-avatar-sm" style="background:#2B5CE6">SS</div>
+              SkySync Academy
+            </div>
+            <div class="listing-meta">
+              <div class="listing-meta-item">📅 Jun 14, 2025</div>
+              <div class="listing-meta-item">⏱ 3 days</div>
+              <div class="listing-meta-item">🎓 Certificate</div>
+            </div>
+          </div>
+          <div class="listing-card-footer">
+            <div class="listing-price price-paid">LKR 4,500</div>
+            <button class="listing-cta">View Details</button>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="listing-card" onclick="openModal('modal2')">
+          <div class="listing-card-header">
+            <span class="listing-industry-tag tag-marketing">Marketing</span>
+            <div class="listing-mode-badge"><div class="mode-dot mode-physical"></div> Physical</div>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-title">Digital Marketing Fundamentals — Full Day Workshop</div>
+            <div class="listing-provider">
+              <div class="provider-avatar-sm" style="background:#E84B2F">NF</div>
+              Nilufar Fernando
+            </div>
+            <div class="listing-meta">
+              <div class="listing-meta-item">📅 May 30, 2025</div>
+              <div class="listing-meta-item">⏱ 1 day</div>
+              <div class="listing-meta-item">📍 Colombo 3</div>
+            </div>
+          </div>
+          <div class="listing-card-footer">
+            <div class="listing-price price-free">Free</div>
+            <button class="listing-cta">View Details</button>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="listing-card" onclick="openModal('modal3')">
+          <div class="listing-card-header">
+            <span class="listing-industry-tag tag-finance">Finance</span>
+            <div class="listing-mode-badge"><div class="mode-dot mode-hybrid"></div> Hybrid</div>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-title">CFA Level 1 Prep — Study Group &amp; Mock Exams</div>
+            <div class="listing-provider">
+              <div class="provider-avatar-sm" style="background:#1A9E6E">CI</div>
+              Capital Insights LK
+            </div>
+            <div class="listing-meta">
+              <div class="listing-meta-item">📅 Jun 1, 2025</div>
+              <div class="listing-meta-item">⏱ 6 weeks</div>
+              <div class="listing-meta-item">🎓 Certificate</div>
+            </div>
+          </div>
+          <div class="listing-card-footer">
+            <div class="listing-price price-paid">LKR 8,000</div>
+            <button class="listing-cta">View Details</button>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="listing-card">
+          <div class="listing-card-header">
+            <span class="listing-industry-tag tag-design">Design</span>
+            <div class="listing-mode-badge"><div class="mode-dot mode-online"></div> Online</div>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-title">UI/UX Design Sprint for Beginners — Figma Intensive</div>
+            <div class="listing-provider">
+              <div class="provider-avatar-sm" style="background:#7a1ac4">DS</div>
+              Design Studio CLB
+            </div>
+            <div class="listing-meta">
+              <div class="listing-meta-item">📅 Jun 7, 2025</div>
+              <div class="listing-meta-item">⏱ 2 days</div>
+              <div class="listing-meta-item">🎓 Certificate</div>
+            </div>
+          </div>
+          <div class="listing-card-footer">
+            <div class="listing-price price-free">Free</div>
+            <button class="listing-cta">View Details</button>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="listing-card">
+          <div class="listing-card-header">
+            <span class="listing-industry-tag tag-data">Data Science</span>
+            <div class="listing-mode-badge"><div class="mode-dot mode-online"></div> Online</div>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-title">Python for Data Analysis — Hands-on with Real Datasets</div>
+            <div class="listing-provider">
+              <div class="provider-avatar-sm" style="background:#1a8fc4">DP</div>
+              Dr. Ruwan Pathirana
+            </div>
+            <div class="listing-meta">
+              <div class="listing-meta-item">📅 Jun 20, 2025</div>
+              <div class="listing-meta-item">⏱ 4 weeks</div>
+              <div class="listing-meta-item">🎓 Certificate</div>
+            </div>
+          </div>
+          <div class="listing-card-footer">
+            <div class="listing-price price-paid">LKR 3,200</div>
+            <button class="listing-cta">View Details</button>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="listing-card">
+          <div class="listing-card-header">
+            <span class="listing-industry-tag tag-hr">HR</span>
+            <div class="listing-mode-badge"><div class="mode-dot mode-physical"></div> Physical</div>
+          </div>
+          <div class="listing-card-body">
+            <div class="listing-title">Talent Acquisition &amp; CV Building Masterclass</div>
+            <div class="listing-provider">
+              <div class="provider-avatar-sm" style="background:#c41a1a">HC</div>
+              HireConnect LK
+            </div>
+            <div class="listing-meta">
+              <div class="listing-meta-item">📅 May 25, 2025</div>
+              <div class="listing-meta-item">⏱ Half day</div>
+              <div class="listing-meta-item">📍 Kandy</div>
+            </div>
+          </div>
+          <div class="listing-card-footer">
+            <div class="listing-price price-free">Free</div>
+            <button class="listing-cta">View Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 2: SAVED ══ -->
+  <section class="screen" id="screen-saved">
+    <div class="topbar">
+      <div class="topbar-title">Saved Listings</div>
+    </div>
+    <div class="content">
+      <div style="max-width:600px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+          <div class="profile-section" style="padding:24px;margin:0">
+            <div class="profile-section-title">Your bookmarks</div>
+            <div class="saved-listing">
+              <div class="saved-listing-icon">☁️</div>
+              <div style="flex:1">
+                <div class="saved-listing-title">AWS Cloud Practitioner Certification Bootcamp</div>
+                <div class="saved-listing-meta">SkySync Academy · Jun 14 · LKR 4,500</div>
+              </div>
+              <span class="listing-industry-tag tag-tech" style="font-size:10px">Tech</span>
+            </div>
+            <div class="saved-listing">
+              <div class="saved-listing-icon">📊</div>
+              <div style="flex:1">
+                <div class="saved-listing-title">Python for Data Analysis — Hands-on with Real Datasets</div>
+                <div class="saved-listing-meta">Dr. Ruwan Pathirana · Jun 20 · LKR 3,200</div>
+              </div>
+              <span class="listing-industry-tag tag-data" style="font-size:10px">Data</span>
+            </div>
+            <div class="saved-listing">
+              <div class="saved-listing-icon">🎨</div>
+              <div style="flex:1">
+                <div class="saved-listing-title">UI/UX Design Sprint for Beginners</div>
+                <div class="saved-listing-meta">Design Studio CLB · Jun 7 · Free</div>
+              </div>
+              <span class="listing-industry-tag tag-design" style="font-size:10px">Design</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 3: PROFILE ══ -->
+  <section class="screen" id="screen-profile">
+    <div class="topbar">
+      <div class="topbar-title">My Profile</div>
+      <button class="topbar-btn btn-ghost">Edit Profile</button>
+    </div>
+    <div class="content">
+      <div style="max-width:640px">
+        <div class="profile-hero">
+          <div class="profile-avatar">KP</div>
+          <div>
+            <div class="profile-name">Kavya Perera</div>
+            <div class="profile-uni">University of Moratuwa · Electrical Engineering · Year 3</div>
+            <div class="profile-verified">✓ Student Verified</div>
+          </div>
+          <div class="auth-left-deco"></div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-section">
+            <div class="profile-section-title">About</div>
+            <p style="font-size:14px;color:var(--ink2);line-height:1.7">Final year engineering student interested in cloud computing, data science, and product management. Looking for certifications to strengthen my CV before graduation in December 2025.</p>
+          </div>
+          <div class="profile-section">
+            <div class="profile-section-title">Interests</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span class="listing-industry-tag tag-tech">Tech</span>
+              <span class="listing-industry-tag tag-data">Data Science</span>
+              <span class="listing-industry-tag tag-finance">Finance</span>
+              <span class="listing-industry-tag tag-design">Design</span>
+            </div>
+          </div>
+          <div class="profile-section">
+            <div class="profile-section-title">Saved listings (3)</div>
+            <div class="saved-listing">
+              <div class="saved-listing-icon">☁️</div>
+              <div><div class="saved-listing-title">AWS Cloud Practitioner Bootcamp</div><div class="saved-listing-meta">Jun 14 · LKR 4,500</div></div>
+            </div>
+            <div class="saved-listing">
+              <div class="saved-listing-icon">📊</div>
+              <div><div class="saved-listing-title">Python for Data Analysis</div><div class="saved-listing-meta">Jun 20 · LKR 3,200</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 4: SUBMIT LISTING ══ -->
+  <section class="screen" id="screen-submit">
+    <div class="topbar">
+      <div class="topbar-title">Post a Listing</div>
+    </div>
+    <div class="content">
+      <div class="form-container">
+        <div class="form-note" style="margin-bottom:20px">
+          🎉 <strong>Currently free to list</strong> — All workshop and certification listings are published for free during our launch phase. Your listing will be reviewed within 24 hours.
+        </div>
+
+        <div class="form-card">
+          <div class="form-section-title"><div class="section-num">1</div> Provider Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Provider Name <span>*</span></label>
+              <input class="form-input" type="text" placeholder="Your name or organisation">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Provider Type <span>*</span></label>
+              <select class="form-select">
+                <option value="">Select type…</option>
+                <option>Individual Coach</option>
+                <option>Training Institute</option>
+                <option>University Faculty</option>
+                <option>Company / Agency</option>
+                <option>Industry Professional</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Email <span>*</span></label>
+              <input class="form-input" type="email" placeholder="contact@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">WhatsApp / Phone</label>
+              <input class="form-input" type="tel" placeholder="+94 77 000 0000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Website / LinkedIn</label>
+              <input class="form-input" type="url" placeholder="https://…">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Provider Logo</label>
+              <div class="upload-zone" style="padding:16px">
+                <div>📷 Upload logo <span style="color:var(--ink3);font-size:12px">(PNG/JPG, max 2MB)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-section-title"><div class="section-num">2</div> Workshop / Certification Details</div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Title <span>*</span></label>
+              <input class="form-input" type="text" placeholder="e.g. AWS Cloud Practitioner Bootcamp 2025">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Industry / Category <span>*</span></label>
+              <select class="form-select">
+                <option value="">Select industry…</option>
+                <option>Technology</option>
+                <option>Finance & Banking</option>
+                <option>Marketing & Sales</option>
+                <option>Data Science & AI</option>
+                <option>Design & Creative</option>
+                <option>Human Resources</option>
+                <option>Business & Management</option>
+                <option>Engineering</option>
+                <option>Healthcare</option>
+                <option>Law & Compliance</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Listing Type <span>*</span></label>
+              <select class="form-select">
+                <option>Workshop</option>
+                <option>Certification Program</option>
+                <option>Webinar</option>
+                <option>Bootcamp</option>
+                <option>Mentorship Program</option>
+                <option>Short Course</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Mode of Delivery <span>*</span></label>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="mode" value="online"> 💻 Online</label>
+                <label class="radio-option"><input type="radio" name="mode" value="physical"> 📍 Physical</label>
+                <label class="radio-option"><input type="radio" name="mode" value="hybrid"> 🔄 Hybrid</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Start Date <span>*</span></label>
+              <input class="form-input" type="date">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration</label>
+              <input class="form-input" type="text" placeholder="e.g. 2 days / 4 weeks">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Location (if Physical)</label>
+              <input class="form-input" type="text" placeholder="e.g. Colombo 3 / BMICH">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Participants</label>
+              <input class="form-input" type="number" placeholder="e.g. 30">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Fee <span>*</span></label>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="fee" value="free"> 🆓 Free</label>
+                <label class="radio-option"><input type="radio" name="fee" value="paid"> 💳 Paid (LKR)</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount (LKR)</label>
+              <input class="form-input" type="number" placeholder="e.g. 4500">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Offers Certificate?</label>
+              <select class="form-select">
+                <option>Yes — completion certificate</option>
+                <option>Yes — industry recognised</option>
+                <option>No certificate</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Description <span>*</span></label>
+              <textarea class="form-textarea" placeholder="What will students learn? What is covered? Any prerequisites?"></textarea>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Poster / Banner Image</label>
+              <div class="upload-zone">
+                <div class="upload-icon">🖼️</div>
+                <div class="upload-text">Drag &amp; drop your poster or click to browse</div>
+                <div class="upload-sub">PNG, JPG up to 5MB · Recommended 1200×628px</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-section-title"><div class="section-num">3</div> Registration Link</div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Registration / Enrollment Link</label>
+              <input class="form-input" type="url" placeholder="https://forms.google.com/… or your website registration page">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Any additional notes for students</label>
+              <textarea class="form-textarea" placeholder="e.g. Bring your own laptop, materials provided, dress code…" style="min-height:70px"></textarea>
+            </div>
+          </div>
+          <div class="form-submit-row">
+            <button class="topbar-btn btn-ghost">Save Draft</button>
+            <button class="topbar-btn btn-primary" onclick="showToast('✅ Listing submitted for review!')">Submit for Review →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 5: ADMIN ══ -->
+  <section class="screen" id="screen-admin">
+    <div class="topbar">
+      <div class="topbar-title">Admin Panel</div>
+      <button class="topbar-btn btn-ghost">Export CSV</button>
+    </div>
+    <div class="content">
+      <div class="admin-summary">
+        <div class="admin-stat">
+          <div class="admin-stat-val" style="color:var(--accent4)">3</div>
+          <div class="admin-stat-lbl">Pending review</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-val" style="color:var(--accent3)">139</div>
+          <div class="admin-stat-lbl">Approved listings</div>
+        </div>
+        <div class="admin-stat">
+          <div class="admin-stat-val">1,204</div>
+          <div class="admin-stat-lbl">Registered students</div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Pending Listings</div>
+      <table class="admin-table" style="margin-bottom:32px">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Provider</th>
+            <th>Type</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Blockchain for Finance</strong></td>
+            <td>FutureFin LK</td>
+            <td>Workshop</td>
+            <td>Today, 9:14 AM</td>
+            <td><span class="status-badge status-pending">Pending</span></td>
+            <td><div class="admin-actions">
+              <button class="action-btn view-btn">View</button>
+              <button class="action-btn approve-btn" onclick="showToast('✅ Listing approved!')">Approve</button>
+              <button class="action-btn reject-btn" onclick="showToast('❌ Listing rejected.')">Reject</button>
+            </div></td>
+          </tr>
+          <tr>
+            <td><strong>Google Analytics Certification Prep</strong></td>
+            <td>Dilanka Mendis</td>
+            <td>Bootcamp</td>
+            <td>Yesterday, 3:40 PM</td>
+            <td><span class="status-badge status-pending">Pending</span></td>
+            <td><div class="admin-actions">
+              <button class="action-btn view-btn">View</button>
+              <button class="action-btn approve-btn" onclick="showToast('✅ Listing approved!')">Approve</button>
+              <button class="action-btn reject-btn" onclick="showToast('❌ Listing rejected.')">Reject</button>
+            </div></td>
+          </tr>
+          <tr>
+            <td><strong>Public Speaking &amp; Presentation Skills</strong></td>
+            <td>SpeakUp Academy</td>
+            <td>Workshop</td>
+            <td>May 18, 11:00 AM</td>
+            <td><span class="status-badge status-pending">Pending</span></td>
+            <td><div class="admin-actions">
+              <button class="action-btn view-btn">View</button>
+              <button class="action-btn approve-btn" onclick="showToast('✅ Listing approved!')">Approve</button>
+              <button class="action-btn reject-btn" onclick="showToast('❌ Listing rejected.')">Reject</button>
+            </div></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-bottom:16px;font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Recent Approvals</div>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Title</th><th>Provider</th><th>Date</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>AWS Cloud Practitioner Bootcamp</td><td>SkySync Academy</td><td>May 17</td><td><span class="status-badge status-approved">Approved</span></td></tr>
+          <tr><td>Digital Marketing Fundamentals</td><td>Nilufar Fernando</td><td>May 16</td><td><span class="status-badge status-approved">Approved</span></td></tr>
+          <tr><td>Excel Power User Workshop</td><td>DataPro LK</td><td>May 15</td><td><span class="status-badge status-rejected">Rejected</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 6: AUTH ══ -->
+  <section class="screen" id="screen-login">
+    <div class="auth-layout">
+      <div class="auth-left">
+        <div class="auth-left-deco"></div>
+        <div class="auth-left-deco2"></div>
+        <div style="position:relative">
+          <div class="logo-mark" style="margin-bottom:32px">
+            <div class="logo-dot"></div>
+            <span style="font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:18px">SkillBridge LK</span>
+          </div>
+          <div class="auth-tagline">Bridge the gap between<br><span>campus</span> and<br>career.</div>
+          <div class="auth-sub">Sri Lanka's first platform connecting university students directly with industry workshops, certifications, and career coaching.</div>
+          <div class="auth-badges">
+            <div class="auth-badge"><div class="auth-badge-icon">🎓</div><div class="auth-badge-text">Verified university students only</div></div>
+            <div class="auth-badge"><div class="auth-badge-icon">✅</div><div class="auth-badge-text">All listings curated &amp; reviewed</div></div>
+            <div class="auth-badge"><div class="auth-badge-icon">🆓</div><div class="auth-badge-text">Free to access during launch</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-form-title">Welcome</div>
+        <div class="auth-form-sub">Join thousands of Sri Lankan students building their professional edge.</div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchTab(this,'tab-login')">Sign In</button>
+          <button class="auth-tab" onclick="switchTab(this,'tab-register')">Create Account</button>
+        </div>
+
+        <div id="tab-login">
+          <div class="auth-form-group">
+            <label class="auth-label">University Email</label>
+            <input class="auth-input" type="email" placeholder="yourname@uom.lk">
+          </div>
+          <div class="auth-form-group">
+            <label class="auth-label">Password</label>
+            <input class="auth-input" type="password" placeholder="••••••••">
+          </div>
+          <button class="auth-btn" onclick="showToast('👋 Signed in successfully!')">Sign In</button>
+          <div class="auth-divider"><span>or continue as</span></div>
+          <button class="topbar-btn btn-ghost" style="width:100%;justify-content:center" onclick="showScreen('submit')">Provider / Coach →</button>
+        </div>
+
+        <div id="tab-register" style="display:none">
+          <div class="auth-form-group">
+            <label class="auth-label">Full Name</label>
+            <input class="auth-input" type="text" placeholder="Kavya Perera">
+          </div>
+          <div class="auth-form-group">
+            <label class="auth-label">University Email</label>
+            <input class="auth-input" type="email" placeholder="yourname@uom.lk">
+          </div>
+          <div class="auth-form-group">
+            <label class="auth-label">University</label>
+            <select class="auth-input" style="cursor:pointer">
+              <option value="">Select your university…</option>
+              <option>University of Moratuwa</option>
+              <option>University of Colombo</option>
+              <option>University of Peradeniya</option>
+              <option>University of Kelaniya</option>
+              <option>SLIIT</option>
+              <option>NSBM Green University</option>
+              <option>Sabaragamuwa University</option>
+              <option>Eastern University</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="auth-form-group">
+            <label class="auth-label">Student ID Verification</label>
+            <div class="id-upload">
+              📎 Upload student ID card (front)<br>
+              <span style="font-size:12px;color:var(--ink3)">JPG/PNG · Used for one-time verification only</span>
+            </div>
+          </div>
+          <div class="auth-form-group">
+            <label class="auth-label">Password</label>
+            <input class="auth-input" type="password" placeholder="Min 8 characters">
+          </div>
+          <button class="auth-btn" onclick="showToast('🎉 Account created! Verification pending.')">Create Account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ MODALS ══ -->
+<div class="modal-overlay" id="modal1" onclick="closeModal(event,'modal1')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tags">
+        <span class="listing-industry-tag tag-tech">Tech</span>
+        <div class="listing-mode-badge"><div class="mode-dot mode-online"></div> Online</div>
+        <span class="listing-industry-tag" style="background:#E8F5ED;color:#1a7a42">🎓 Certificate</span>
+      </div>
+      <div class="modal-title">AWS Cloud Practitioner Certification Bootcamp</div>
+      <button class="modal-close" onclick="document.getElementById('modal1').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-section">
+        <div class="detail-section-title">Details</div>
+        <div class="detail-grid">
+          <div class="detail-item"><div class="detail-item-label">Date</div><div class="detail-item-value">June 14–16, 2025</div></div>
+          <div class="detail-item"><div class="detail-item-label">Duration</div><div class="detail-item-value">3 days intensive</div></div>
+          <div class="detail-item"><div class="detail-item-label">Mode</div><div class="detail-item-value">Online (Zoom)</div></div>
+          <div class="detail-item"><div class="detail-item-label">Fee</div><div class="detail-item-value" style="color:var(--ink)">LKR 4,500</div></div>
+          <div class="detail-item"><div class="detail-item-label">Seats</div><div class="detail-item-value">30 (12 remaining)</div></div>
+          <div class="detail-item"><div class="detail-item-label">Certificate</div><div class="detail-item-value">Yes — AWS Official</div></div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">About this program</div>
+        <div class="modal-desc">A 3-day intensive bootcamp designed for university students to pass the AWS Cloud Practitioner exam on their first attempt. Covers cloud concepts, AWS core services, security, architecture, pricing, and support models. Includes mock exams and study materials.<br><br>No prior cloud experience required. Basic IT knowledge helpful.</div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Provider</div>
+        <div class="provider-card">
+          <div class="provider-avatar-lg" style="background:#2B5CE6">SS</div>
+          <div>
+            <div class="provider-name">SkySync Academy</div>
+            <div class="provider-title">AWS Authorised Training Partner · Colombo</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-actions">
+        <button class="contact-btn contact-primary" onclick="showToast('📧 Opening email to provider…')">✉ Contact Provider</button>
+        <button class="contact-btn contact-secondary" onclick="showToast('🔗 Opening registration link…')">Register Now ↗</button>
+        <button class="contact-btn contact-secondary" style="flex:0;padding:12px 16px" onclick="showToast('🔖 Saved!')">🔖</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal2" onclick="closeModal(event,'modal2')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tags">
+        <span class="listing-industry-tag tag-marketing">Marketing</span>
+        <div class="listing-mode-badge"><div class="mode-dot mode-physical"></div> Physical · Colombo 3</div>
+        <span class="listing-industry-tag" style="background:#E8F5ED;color:#1a7a42">🆓 Free</span>
+      </div>
+      <div class="modal-title">Digital Marketing Fundamentals — Full Day Workshop</div>
+      <button class="modal-close" onclick="document.getElementById('modal2').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-section">
+        <div class="detail-grid">
+          <div class="detail-item"><div class="detail-item-label">Date</div><div class="detail-item-value">May 30, 2025</div></div>
+          <div class="detail-item"><div class="detail-item-label">Duration</div><div class="detail-item-value">Full day (9am–5pm)</div></div>
+          <div class="detail-item"><div class="detail-item-label">Location</div><div class="detail-item-value">SLASSCOM, Colombo 3</div></div>
+          <div class="detail-item"><div class="detail-item-label">Fee</div><div class="detail-item-value" style="color:var(--accent3)">Free</div></div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">About</div>
+        <div class="modal-desc">A free, full-day crash course covering SEO, social media strategy, Google Ads basics, email marketing, and content creation. Perfect for students who want to add digital marketing skills to their CV. Lunch provided.</div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Provider</div>
+        <div class="provider-card">
+          <div class="provider-avatar-lg" style="background:#E84B2F">NF</div>
+          <div>
+            <div class="provider-name">Nilufar Fernando</div>
+            <div class="provider-title">Senior Digital Marketer · 10+ years experience</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-actions">
+        <button class="contact-btn contact-primary" onclick="showToast('📧 Opening email to provider…')">✉ Contact Provider</button>
+        <button class="contact-btn contact-secondary" onclick="showToast('🔗 Opening registration…')">Register ↗</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal3" onclick="closeModal(event,'modal3')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-tags">
+        <span class="listing-industry-tag tag-finance">Finance</span>
+        <div class="listing-mode-badge"><div class="mode-dot mode-hybrid"></div> Hybrid</div>
+        <span class="listing-industry-tag" style="background:#E8F5ED;color:#1a7a42">🎓 Certificate</span>
+      </div>
+      <div class="modal-title">CFA Level 1 Prep — Study Group &amp; Mock Exams</div>
+      <button class="modal-close" onclick="document.getElementById('modal3').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-section">
+        <div class="detail-grid">
+          <div class="detail-item"><div class="detail-item-label">Start Date</div><div class="detail-item-value">June 1, 2025</div></div>
+          <div class="detail-item"><div class="detail-item-label">Duration</div><div class="detail-item-value">6 weeks</div></div>
+          <div class="detail-item"><div class="detail-item-label">Mode</div><div class="detail-item-value">Hybrid (Sat in-person)</div></div>
+          <div class="detail-item"><div class="detail-item-label">Fee</div><div class="detail-item-value">LKR 8,000</div></div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">About</div>
+        <div class="modal-desc">Structured 6-week CFA Level 1 preparation program combining weekly online sessions with Saturday in-person mock exams. Covers all 10 topic areas in the CFA curriculum. Study materials and mock papers included.</div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Provider</div>
+        <div class="provider-card">
+          <div class="provider-avatar-lg" style="background:#1A9E6E">CI</div>
+          <div>
+            <div class="provider-name">Capital Insights LK</div>
+            <div class="provider-title">Finance Training Institute · Colombo</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-actions">
+        <button class="contact-btn contact-primary" onclick="showToast('📧 Opening email…')">✉ Contact Provider</button>
+        <button class="contact-btn contact-secondary" onclick="showToast('🔗 Opening registration…')">Register ↗</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(e, id) {
+  if (e.target === e.currentTarget) document.getElementById(id).classList.remove('open');
+}
+
+function filterClick(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-login').style.display = tabId === 'tab-login' ? 'block' : 'none';
+  document.getElementById('tab-register').style.display = tabId === 'tab-register' ? 'block' : 'none';
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
