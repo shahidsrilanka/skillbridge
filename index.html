@@ -2196,19 +2196,30 @@ function manageDummyStudents(){
 async function renderAdmin(){
   showAppLoader('Loading admin data…');
   let allStudents=[], allProviders=[], allListings=[], allWL=[];
+  
   try {
-    const [allStudents_r,allProviders_r,allListings_r,allWL_r] = await Promise.all([
-      sbQuery('students',  {}, 'registered'),
-      sbQuery('providers', {}, 'registered'),
-      sbQuery('listings',  {}, 'submitted'),
-      sbQuery('whitelist_requests', {}, 'submitted'),
-    ]);
-    allStudents = allStudents_r; allProviders = allProviders_r;
-    allListings = allListings_r; allWL = allWL_r;
-    // sync to local cache for CSV export
-    DB.students=allStudents; DB.providers=allProviders; DB.listings=allListings; DB.whitelistRequests=allWL;
-  } catch(e){ hideAppLoader(); showToast('❌ Failed to load admin data: '+e.message); return; }
+    // ✅ Sequential queries instead of all at once
+    // This avoids overwhelming Supabase free tier connections
+    
+    const {data: s_r} = await sbQuery('students', {}, 'registered');
+    allStudents = s_r || [];
+    
+    const {data: p_r} = await sbQuery('providers', {}, 'registered');
+    allProviders = p_r || [];
+    
+    const {data: l_r} = await sbQuery('listings', {}, 'submitted');
+    allListings = l_r || [];
+    
+    const {data: wl_r} = await sbQuery('whitelist_requests', {}, 'submitted');
+    allWL = wl_r || [];
+
+  } catch(e){ 
+    hideAppLoader(); 
+    showToast('❌ Failed to load admin data: '+e.message); 
+    return; 
+  }
   hideAppLoader();
+  // ... rest of your render code stays the same
 
   const pending=allListings.filter(l=>l.status==='pending').length+allStudents.filter(s=>s.status==='pending').length;
   document.getElementById('a-stat-pending').textContent=pending;
